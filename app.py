@@ -23,18 +23,18 @@ except ImportError as err:
 
 
 # Resource handling classes/functions
-def load_png(name):
-    """Load image and return image object"""
-    fullname = os.path.join('data', name)
+def load_image(name, colorkey=None):
+    fullname = os.path.join("data", name)
     try:
         image = pygame.image.load(fullname)
-        if image.get_alpha() is None:
-            image = image.convert()
-        else:
-            image = image.convert_alpha()
     except pygame.error as message:
-        print('cannot load image:', image)
-        raise (SystemExit, message)
+        print('Cannot load image: ', name)
+        raise SystemExit(message)
+    image = image.convert()
+    if colorkey is not None:
+        if colorkey == -1:
+            colorkey = image.get_at((0, 0))
+        image.set_colorkey(colorkey, RLEACCEL)
     return image, image.get_rect()
 
 # Game object classes
@@ -43,8 +43,11 @@ def load_png(name):
 # The main loop
 def main():
     # testing
-    testIMG = load_png('chimp')
-
+    pygame.init()
+    screen = pygame.display.set_mode((500, 500))
+    print(os.path.join("c:", "data"))
+    testIMG = load_image('chimp.jpg')
+    testIMG2 = load_image('triangle.png')
 
 
 if __name__ == "__main__":
