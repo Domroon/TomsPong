@@ -37,6 +37,22 @@ def load_image(name, colorkey=None):
         image.set_colorkey(colorkey, RLEACCEL)
     return image, image.get_rect()
 
+
+def load_sound(name):
+    class NoneSound:
+        def play(self):
+            pass
+    if not pygame.mixer:
+        return NoneSound()
+    fullname = os.path.join("data", name)
+    try:
+        sound = pygame.mixer.Sound(fullname)
+    except pygame.error as message:
+        print('Cannot load sound:', fullname)
+        raise SystemExit(message)
+    return sound
+
+
 # Game object classes
 # Any other game functions
 # Initialise the game
@@ -45,9 +61,9 @@ def main():
     # testing
     pygame.init()
     screen = pygame.display.set_mode((500, 500))
-    print(os.path.join("c:", "data"))
     testIMG = load_image('chimp.jpg')
     testIMG2 = load_image('triangle.png')
+    testWAV = load_sound('pong.wav')
 
 
 if __name__ == "__main__":
