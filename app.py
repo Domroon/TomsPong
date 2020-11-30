@@ -83,7 +83,22 @@ def main():
     # testing
     pygame.init()
     screen = pygame.display.set_mode((500, 500))
-    ball = Ball((10, 10))
+    ball = Ball((10, -2))
+    clock = pygame.time.Clock()
+    allsprites = pygame.sprite.RenderPlain(ball)
+
+    run = True
+    game_speed = 60
+    while run:
+        clock.tick(game_speed)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+        ball.update()
+        allsprites.draw(screen)
+        pygame.display.update()
 
 
 if __name__ == "__main__":
