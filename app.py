@@ -41,3 +41,11 @@ def load_png(name):
 # Any other game functions
 # Initialise the game
 # The main loop
+def main():
+    # testing
+    testIMG = load_png('chimp')
+
+
+
+if __name__ == "__main__":
+    main()
