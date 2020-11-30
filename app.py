@@ -76,17 +76,58 @@ class Ball(pygame.sprite.Sprite):
         (dx, dy) = (z*math.cos(angle), z*math.sin(angle))
         return rect.move(dx, dy)
 
+
+class Bat(pygame.sprite.Sprite):
+    """Movable tennis 'bat' with one hits the ball
+    Returns: bat object
+    Functions: reinit, update, moveup, movedown
+    Attributes: which, speed"""
+
+    def __init__(self, side):
+        pygame.sprite.Sprite.__init__(self)
+        self.image, self.rect = load_image('bat.png')
+        screen = pygame.display.get_surface()
+        self.area = screen.get_rect()
+        self.side = side
+        self.speed = 10
+        self.state = "still"
+        self.reinit()
+
+    def reinit(self):
+        self.state = "still"
+        self.movepos = [0, 0]
+        if self.side == "left":
+            self.rect.midleft = self.area.midleft
+        elif self.side == "right":
+            self.rect.midright = self.area.midright
+
+    def update(self):
+        newpos = self.rect.move(self.movepos)
+        if self.area.contains(newpos):
+            self.rect = newpos
+        pygame.event.pump()
+
+    def moveup(self):
+        self.movepos[1] = self.movepos[1] - self.speed
+        self.state = "moveup"
+
+    def movedown(self):
+        self.movepos[1] = self.movepos[1] + self.speed
+        self.state = "movedown"
 # Any other game functions
-# Initialise the game
-# The main loop
+# -
+
+
 def main():
-    # testing
+    # Initialise the game
     pygame.init()
     screen = pygame.display.set_mode((500, 500))
     ball = Ball((10, -2))
+    player = Bat('left')
     clock = pygame.time.Clock()
-    allsprites = pygame.sprite.RenderPlain(ball)
+    allsprites = pygame.sprite.RenderPlain(ball, player)
 
+    # The main loop
     run = True
     game_speed = 60
     while run:
@@ -95,8 +136,18 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+            elif event.type == KEYDOWN:
+                if event.key == K_UP:
+                    player.moveup()
+                if event.key == K_DOWN:
+                    player.movedown()
+            elif event.type == KEYUP:
+                if event.key == K_UP or event.key == K_DOWN:
+                    player.movepos = [0, 0]
+                    player.state = "still"
 
         ball.update()
+        player.update()
         allsprites.draw(screen)
         pygame.display.update()
 
