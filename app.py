@@ -120,11 +120,31 @@ class Bat(pygame.sprite.Sprite):
 
 def main():
     # Initialise the game
+
+    # Initialise the screen
     pygame.init()
-    screen = pygame.display.set_mode((500, 500))
+    screen = pygame.display.set_mode((640, 480))
+    pygame.display.set_caption('Basic Pong')
+
+    # Fill Background
+    background = pygame.Surface(screen.get_size())
+    background = background.convert()
+    background.fill((0, 0, 0))
+
+    # Initialise players
+    global player1
+    global player2
+    player = Bat("left")
+    player2 = Bat("right")
+
+    # Initialise ball
+    speed = 13
+    # rand = ((0.1 * (random.randint(5, 8))))
+    # ball = Ball((0, 0), (0.47, speed))
     ball = Ball((10, -2))
-    player = Bat('left')
+
     clock = pygame.time.Clock()
+
     allsprites = pygame.sprite.RenderPlain(ball, player)
 
     # The main loop
@@ -150,6 +170,7 @@ def main():
         player.update()
         allsprites.draw(screen)
         pygame.display.update()
+        screen.fill((0, 0, 0))
 
 
 if __name__ == "__main__":
