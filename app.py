@@ -57,7 +57,7 @@ def load_sound(name):
 class Ball(pygame.sprite.Sprite):
     """A ball that will move across the screen
     Returns: ball object
-    FUnctions: update, calcnewpos
+    Functions: update, calcnewpos
     Attributes: area, vector"""
 
     def __init__(self, vector):
@@ -70,11 +70,30 @@ class Ball(pygame.sprite.Sprite):
     def update(self):
         newpos = self.calcnewpos(self.rect, self.vector)
         self.rect = newpos
+        (angle, z) = self.vector
+
+        # check collision
+        if not self.area.contains(newpos):
+            tl = not self.area.collidepoint(newpos.topleft)
+            tr = not self.area.collidepoint(newpos.topright)
+            bl = not self.area.collidepoint(newpos.bottomleft)
+            br = not self.area.collidepoint(newpos.bottomright)
+            if tr and tl or (br and bl):
+                angle = -angle
+            if tl and bl:
+                offcourt(player=2)
+            if tr and br:
+                offcourt(player=1)
+
+        self.vector = (angle, z)
 
     def calcnewpos(self, rect, vector):
         (angle, z) = vector
         (dx, dy) = (z*math.cos(angle), z*math.sin(angle))
         return rect.move(dx, dy)
+
+    def reset(self):
+        self.rect = (0, 0)
 
 
 class Bat(pygame.sprite.Sprite):
@@ -114,8 +133,13 @@ class Bat(pygame.sprite.Sprite):
     def movedown(self):
         self.movepos[1] = self.movepos[1] + self.speed
         self.state = "movedown"
+
+
 # Any other game functions
-# -
+def offcourt(player):
+    print(player, ' get one point')
+    # reset ball
+    ball = Ball((10, -2))
 
 
 def main():
